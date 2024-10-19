@@ -12,8 +12,8 @@ from scipy.cluster.hierarchy import dendrogram
 
 
 
-path = './artificial/'
-name="xclara.arff"
+path = '../clustering-benchmark-master/src/main/resources/datasets/artificial/'
+name="insect.arff"
 
 #path_out = './fig/'
 databrut = arff.loadarff(open(path+str(name), 'r'))
@@ -62,13 +62,13 @@ def plot_dendrogram(model, **kwargs):
     dendrogram(linkage_matrix) #, **kwargs)
 
 
-# setting distance_threshold=0 ensures we compute the full tree.
-model = cluster.AgglomerativeClustering(distance_threshold=0, linkage='average', n_clusters=None)
+# setting distance_threshold=0 ensures we compute the full tree.complete
+model = cluster.AgglomerativeClustering(distance_threshold=0.9, linkage='complete', n_clusters=None)
 
 model = model.fit(datanp)
 plt.figure(figsize=(12, 12))
 plt.title("Hierarchical Clustering Dendrogram")
-# plot the top p levels of the dendrogram
+# # plot the top p levels of the dendrogram
 plot_dendrogram(model) #, truncate_mode="level", p=5)
 plt.xlabel("Number of points in node (or index of point if no parenthesis).")
 plt.show()
@@ -80,8 +80,8 @@ plt.show()
 ### FIXER la distance
 # 
 tps1 = time.time()
-seuil_dist = 10
-model = cluster.AgglomerativeClustering(distance_threshold=seuil_dist, linkage='average', n_clusters=None)
+seuil_dist = 0.9
+model = cluster.AgglomerativeClustering(distance_threshold=seuil_dist, linkage='complete', n_clusters=None)
 model = model.fit(datanp)
 tps2 = time.time()
 labels = model.labels_
@@ -90,7 +90,7 @@ labels = model.labels_
 k = model.n_clusters_
 leaves=model.n_leaves_
 plt.scatter(f0, f1, c=labels, s=8)
-plt.title("Clustering agglomératif (average, distance_treshold= "+str(seuil_dist)+") "+str(name))
+plt.title("Clustering agglomératif (single, distance_treshold= "+str(seuil_dist)+") "+str(name))
 plt.show()
 print("nb clusters =",k,", nb feuilles = ", leaves, " runtime = ", round((tps2 - tps1)*1000,2),"ms")
 
@@ -98,9 +98,9 @@ print("nb clusters =",k,", nb feuilles = ", leaves, " runtime = ", round((tps2 -
 ###
 # FIXER le nombre de clusters
 ###
-k=3
+k=5
 tps1 = time.time()
-model = cluster.AgglomerativeClustering(linkage='average', n_clusters=k)
+model = cluster.AgglomerativeClustering(linkage='complete', n_clusters=1)
 model = model.fit(datanp)
 tps2 = time.time()
 labels = model.labels_
